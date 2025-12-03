@@ -1,4 +1,6 @@
 ﻿
+using MlazAPIs.Utility.DBInitializer;
+
 namespace MlazAPIs
 {
     public static class AppConfigration
@@ -34,6 +36,7 @@ namespace MlazAPIs
                    };
                });
             services.AddTransient<ITokenService, TokenService>();
+            services.AddScoped<IDBInitializer, DBInitializer>();
 
         }
     }
