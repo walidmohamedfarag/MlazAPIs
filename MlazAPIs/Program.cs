@@ -1,3 +1,4 @@
+using MlazAPIs.Utility.DBInitializer;
 using Scalar.AspNetCore;
 
 namespace MlazAPIs
@@ -19,7 +20,9 @@ namespace MlazAPIs
             builder.Services.Configure(connectionString);
 
             var app = builder.Build();
-
+            var scope = app.Services.CreateScope();
+            var service = scope.ServiceProvider.GetService<IDBInitializer>();
+            service!.Initialize();
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
