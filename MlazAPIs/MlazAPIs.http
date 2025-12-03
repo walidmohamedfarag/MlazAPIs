@@ -1,0 +1,6 @@
+@MlazAPIs_HostAddress = http://localhost:5213
+
+GET {{MlazAPIs_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
