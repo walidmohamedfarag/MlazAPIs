@@ -120,7 +120,7 @@ namespace MlazAPIs.Areas.Identity.Controllers
                 success = "Login Successfully as Gust",
                 name = user.FulltName,
                 id = user.Id,
-                role = string.Join(" ," , userManager.GetRolesAsync(user)),
+                role = string.Join(" ," ,(await userManager.GetRolesAsync(user)).ToList()),
             });
         }
         
