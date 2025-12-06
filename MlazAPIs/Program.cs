@@ -23,6 +23,7 @@ namespace MlazAPIs
             var scope = app.Services.CreateScope();
             var service = scope.ServiceProvider.GetService<IDBInitializer>();
             service!.Initialize();
+            builder.Services.AddAuthentication();
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {

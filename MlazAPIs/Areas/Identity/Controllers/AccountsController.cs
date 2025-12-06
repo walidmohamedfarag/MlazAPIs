@@ -1,4 +1,5 @@
 ﻿using MlazAPIs.Utility.DBInitializer;
+using System.Text.RegularExpressions;
 
 namespace MlazAPIs.Areas.Identity.Controllers
 {
@@ -8,13 +9,11 @@ namespace MlazAPIs.Areas.Identity.Controllers
     public class AccountsController : ControllerBase
     {
         private readonly UserManager<ApplicationUser> userManager;
-        private readonly RoleManager<IdentityRole> roleManger;
         private readonly ITokenService tokenService;
 
-        public AccountsController(UserManager<ApplicationUser> _userManager, RoleManager<IdentityRole> _roleManger, ITokenService _tokenService)
+        public AccountsController(UserManager<ApplicationUser> _userManager,  ITokenService _tokenService)
         {
             userManager = _userManager;
-            roleManger = _roleManger;
             tokenService = _tokenService;
         }
 
@@ -31,7 +30,7 @@ namespace MlazAPIs.Areas.Identity.Controllers
             {
                 FulltName = registerRequest.FullName,
                 PhoneNumber = registerRequest.PhoneNumber,
-                UserName = $"{registerRequest.FullName}",
+                UserName = $"{Regex.Replace(registerRequest.FullName , @"\s+" , "")}",
                 Email = registerRequest.Email,
             };
             var result = await userManager.CreateAsync(user, registerRequest.Password);
@@ -67,7 +66,8 @@ namespace MlazAPIs.Areas.Identity.Controllers
                 new Claim(ClaimTypes.Role , string.Join(" ," , roles)),
                 new Claim(JwtRegisteredClaimNames.Jti , Guid.NewGuid().ToString())
             };
-            var accessToken = tokenService.GetAccessToken(claims); 
+            var accessToken = tokenService.GetAccessToken(claims);
+            var role = string.Join(" ,", roles.ToList());
             return Ok(new
             {
                 success = "Login Successfully",
@@ -76,7 +76,7 @@ namespace MlazAPIs.Areas.Identity.Controllers
                 userEmail = user.Email,
                 userPhone = user.PhoneNumber,
                 password = loginRequest.Password,
-                role = string.Join(" ," , userManager.GetRolesAsync(user)),
+                Role = role,
                 token = accessToken,
             });
         }
