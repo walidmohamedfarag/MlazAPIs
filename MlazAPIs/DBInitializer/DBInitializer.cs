@@ -28,8 +28,7 @@ namespace MlazAPIs.Utility.DBInitializer
             }
             userManager.CreateAsync(new ApplicationUser
             {
-                FirstName = "Super",
-                LastName = "Admin",
+                FulltName = "SuperAdmin",
                 UserName = "superadmin",
                 Email = "superadmin@gmail.com",
             },"SuperAdmin123").GetAwaiter().GetResult();

@@ -9,12 +9,10 @@ namespace MlazAPIs.Areas.Identity.Controllers
     public class AccountsController : ControllerBase
     {
         private readonly UserManager<ApplicationUser> userManager;
-        private readonly ITokenService tokenService;
 
-        public AccountsController(UserManager<ApplicationUser> _userManager, ITokenService _tokenService)
+        public AccountsController(UserManager<ApplicationUser> _userManager)
         {
             userManager = _userManager;
-            tokenService = _tokenService;
         }
 
         [HttpPost]
@@ -28,9 +26,9 @@ namespace MlazAPIs.Areas.Identity.Controllers
                 });
             var user = new ApplicationUser
             {
-                UserName = $"{registerRequest.FirstName}{registerRequest.LastName}",
-                FirstName = registerRequest.FirstName,
-                LastName = registerRequest.LastName,
+                FulltName = registerRequest.FullName,
+                PhoneNumber = registerRequest.PhoneNumber,
+                UserName = $"{registerRequest.FullName}",
                 Email = registerRequest.Email,
             };
             var result = await userManager.CreateAsync(user, registerRequest.Password);
@@ -59,6 +57,8 @@ namespace MlazAPIs.Areas.Identity.Controllers
             return Ok(new
             {
                 success = "Login Successfully",
+                userEmail = user.Email,
+                userName = user.UserName,
             });
         }
         [HttpGet("ForgetPassword")]
@@ -86,6 +86,22 @@ namespace MlazAPIs.Areas.Identity.Controllers
                 success = "Password Reset Successfully"
             });
         }
+        [HttpPost("GustLogin")]
+        public async Task<IActionResult> GustLogin()
+        {
+            var user = new ApplicationUser
+            {
+                FulltName = $"GustUser{Random.Shared.Next(1, 9999)}",
+            };
+            user.UserName = $"{user.FulltName}";
+            await userManager.CreateAsync(user);  
+            return Ok(new
+            {
+                success = "Login Successfully as Gust",
+            });
+        }
+        #region Refresh
+        /*
         [HttpPost("Refresh")]
         public async Task<IActionResult> Refresh(TokenApiRequest tokenApiRequest)
         {
@@ -106,21 +122,11 @@ namespace MlazAPIs.Areas.Identity.Controllers
                 RefreshToken = refreshToken
             });
         }
-        [HttpPost("GustLogin")]
-        public async Task<IActionResult> GustLogin()
-        {
-            var user = new ApplicationUser
-            {
-                FirstName = "Gust",
-                LastName = $"User{Random.Shared.Next(1,9999)}",
-            };
-            user.UserName = $"{user.FirstName}{user.LastName}";
-            await userManager.CreateAsync(user);  
-            return Ok(new
-            {
-                success = "Login Successfully as Gust",
-            });
-        }
+        */
+        #endregion
+
+        #region Revok
+        /*
         [HttpPost, Authorize]
         [Route("Revok")]
         public async Task<IActionResult> Revok()
@@ -132,7 +138,8 @@ namespace MlazAPIs.Areas.Identity.Controllers
             await userManager.UpdateAsync(user);
             return NoContent();
         }
-
+        */
+        #endregion
 
     }
 }
