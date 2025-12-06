@@ -1,5 +1,4 @@
-﻿
-using System.Threading.Tasks;
+﻿using MlazAPIs.Utility.DBInitializer;
 
 namespace MlazAPIs.Areas.Identity.Controllers
 {
@@ -9,10 +8,14 @@ namespace MlazAPIs.Areas.Identity.Controllers
     public class AccountsController : ControllerBase
     {
         private readonly UserManager<ApplicationUser> userManager;
+        private readonly RoleManager<IdentityRole> roleManger;
+        private readonly ITokenService tokenService;
 
-        public AccountsController(UserManager<ApplicationUser> _userManager)
+        public AccountsController(UserManager<ApplicationUser> _userManager, RoleManager<IdentityRole> _roleManger, ITokenService _tokenService)
         {
             userManager = _userManager;
+            roleManger = _roleManger;
+            tokenService = _tokenService;
         }
 
         [HttpPost]
@@ -34,6 +37,7 @@ namespace MlazAPIs.Areas.Identity.Controllers
             var result = await userManager.CreateAsync(user, registerRequest.Password);
             if (!result.Succeeded)
                 return BadRequest(result.Errors);
+            await userManager.AddToRoleAsync(user, StaticRole.User);
             return Ok(new
             {
                 Success = "Regisrter Successfully"
@@ -54,11 +58,26 @@ namespace MlazAPIs.Areas.Identity.Controllers
                 {
                     error = "Invalid password"
                 });
+            var roles = await userManager.GetRolesAsync(user);
+            var claims = new[]
+            {
+                new Claim(ClaimTypes.Email, user.Email!),
+                new Claim(ClaimTypes.NameIdentifier , user.Id),
+                new Claim(ClaimTypes.Name , user.UserName!),
+                new Claim(ClaimTypes.Role , string.Join(" ," , roles)),
+                new Claim(JwtRegisteredClaimNames.Jti , Guid.NewGuid().ToString())
+            };
+            var accessToken = tokenService.GetAccessToken(claims); 
             return Ok(new
             {
                 success = "Login Successfully",
+                name = user.FulltName,
+                id = user.Id,
                 userEmail = user.Email,
-                userName = user.UserName,
+                userPhone = user.PhoneNumber,
+                password = loginRequest.Password,
+                role = string.Join(" ," , userManager.GetRolesAsync(user)),
+                token = accessToken,
             });
         }
         [HttpGet("ForgetPassword")]
@@ -94,14 +113,17 @@ namespace MlazAPIs.Areas.Identity.Controllers
                 FulltName = $"GustUser{Random.Shared.Next(1, 9999)}",
             };
             user.UserName = $"{user.FulltName}";
-            await userManager.CreateAsync(user);  
+            await userManager.CreateAsync(user);
+            await userManager.AddToRoleAsync(user, StaticRole.User);
             return Ok(new
             {
                 success = "Login Successfully as Gust",
+                name = user.FulltName,
+                id = user.Id,
+                role = string.Join(" ," , userManager.GetRolesAsync(user)),
             });
         }
-        #region Refresh
-        /*
+        
         [HttpPost("Refresh")]
         public async Task<IActionResult> Refresh(TokenApiRequest tokenApiRequest)
         {
@@ -122,24 +144,19 @@ namespace MlazAPIs.Areas.Identity.Controllers
                 RefreshToken = refreshToken
             });
         }
-        */
-        #endregion
 
-        #region Revok
-        /*
         [HttpPost, Authorize]
         [Route("Revok")]
         public async Task<IActionResult> Revok()
         {
-            var userName = User.Identity.Name;
+            var userName = User.Identity!.Name;
             var user = userManager.Users.FirstOrDefault(u => u.UserName == userName);
             if (user is null) return BadRequest(new { error = "user not found" });
             user.RefreshToken = null;
             await userManager.UpdateAsync(user);
             return NoContent();
         }
-        */
-        #endregion
+
 
     }
 }

@@ -12,6 +12,7 @@ namespace MlazAPIs.Services
                 issuer: "https://localhost:7131",
                 audience: "https://localhost:7131",
                 claims: claims,
+                expires: DateTime.Now.AddMinutes(20),
                 signingCredentials: cred
                 );
             var jwtToken = new JwtSecurityTokenHandler().WriteToken(token);
