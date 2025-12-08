@@ -14,6 +14,8 @@ namespace MlazAPIs
             services.AddIdentity<ApplicationUser, IdentityRole>(option =>
             {
                 option.Password.RequireNonAlphanumeric = false;
+                option.Password.RequireDigit = false;
+                option.Password.RequireUppercase = false;
             })
                 .AddEntityFrameworkStores<DataAccess.ApplicationDBContext>()
                 .AddDefaultTokenProviders();

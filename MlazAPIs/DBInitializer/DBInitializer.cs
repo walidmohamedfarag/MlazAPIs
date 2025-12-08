@@ -29,10 +29,11 @@ namespace MlazAPIs.Utility.DBInitializer
             }
             userManager.CreateAsync(new ApplicationUser
             {
-                FulltName = "SuperAdmin",
-                UserName = "superadmin",
+                FullName = "SuperAdmin",
                 Email = "superadmin@gmail.com",
+                UserName = "superadmin@gmail.com",
             }, "SuperAdmin123").GetAwaiter().GetResult();
+
             var user = userManager.FindByEmailAsync("superadmin@gmail.com").GetAwaiter().GetResult();
             userManager.AddToRoleAsync(user!, StaticRole.SuperAdmin).GetAwaiter().GetResult();
         }

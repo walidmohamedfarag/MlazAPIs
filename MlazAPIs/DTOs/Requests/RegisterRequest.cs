@@ -8,8 +8,7 @@ namespace MlazAPIs.DTOs.Requests
         public string FullName { get; set; } = null!;
         [Required, DataType(DataType.EmailAddress)]
         public string Email { get; set; } = null!;
-        [Required]
-        public string PhoneNumber { get; set; } = null!;
+        public string PhoneNumber { get; set; } = string.Empty;
         [Required, DataType(DataType.Password)]
         public string Password { get; set; } = null!;
         [Required, DataType(DataType.Password), Compare(nameof(Password))]

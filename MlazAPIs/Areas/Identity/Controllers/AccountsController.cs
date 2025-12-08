@@ -11,7 +11,7 @@ namespace MlazAPIs.Areas.Identity.Controllers
         private readonly UserManager<ApplicationUser> userManager;
         private readonly ITokenService tokenService;
 
-        public AccountsController(UserManager<ApplicationUser> _userManager,  ITokenService _tokenService)
+        public AccountsController(UserManager<ApplicationUser> _userManager, ITokenService _tokenService)
         {
             userManager = _userManager;
             tokenService = _tokenService;
@@ -28,10 +28,10 @@ namespace MlazAPIs.Areas.Identity.Controllers
                 });
             var user = new ApplicationUser
             {
-                FulltName = registerRequest.FullName.TrimEnd().TrimStart(),
+                FullName = registerRequest.FullName.TrimEnd().TrimStart(),
                 PhoneNumber = registerRequest.PhoneNumber,
-                UserName = $"{Regex.Replace(registerRequest.FullName, @"\s+", "")}",
                 Email = registerRequest.Email,
+                UserName = registerRequest.Email,
             };
             var result = await userManager.CreateAsync(user, registerRequest.Password);
             if (!result.Succeeded)
@@ -61,8 +61,8 @@ namespace MlazAPIs.Areas.Identity.Controllers
             var claims = new[]
             {
                 new Claim(ClaimTypes.Email, user.Email!),
+                new Claim(ClaimTypes.Name, user.FullName),
                 new Claim(ClaimTypes.NameIdentifier , user.Id),
-                new Claim(ClaimTypes.Name , user.UserName!),
                 new Claim(ClaimTypes.Role , string.Join(" ," , roles)),
                 new Claim(JwtRegisteredClaimNames.Jti , Guid.NewGuid().ToString())
             };
@@ -71,9 +71,8 @@ namespace MlazAPIs.Areas.Identity.Controllers
             return Ok(new
             {
                 success = "Login Successfully",
-                name = user.FulltName,
+                name = user.FullName,
                 id = user.Id,
-                userName = user.UserName,
                 userEmail = user.Email,
                 userPhone = user.PhoneNumber,
                 Role = role,
@@ -110,15 +109,15 @@ namespace MlazAPIs.Areas.Identity.Controllers
         {
             var user = new ApplicationUser
             {
-                FulltName = $"GustUser{Random.Shared.Next(1, 999)}",
+                FullName = $"فاعل خير{Random.Shared.Next(1, 999)}",
             };
-            user.UserName = $"{user.FulltName}";
+            user.UserName = user.FullName;
             await userManager.CreateAsync(user);
             await userManager.AddToRoleAsync(user, StaticRole.Gust);
             var roles = string.Join(" ,", await userManager.GetRolesAsync(user));
             var claims = new[]
             {
-                new Claim(ClaimTypes.Name , user.UserName),
+                new Claim(ClaimTypes.Name , user.FullName),
                 new Claim(ClaimTypes.NameIdentifier , user.Id),
                 new Claim(ClaimTypes.Role , roles),
                 new Claim(JwtRegisteredClaimNames.Jti , Guid.NewGuid().ToString()),
@@ -126,8 +125,8 @@ namespace MlazAPIs.Areas.Identity.Controllers
             var accessToken = tokenService.GetAccessToken(claims);
             return Ok(new
             {
-                success = "Login Successfully as Gust",
-                name = user.FulltName.Substring(0,4),
+                success = "Login Successfully as فاعل خير",
+                name = user.FullName.Substring(0, 8),
                 id = user.Id,
                 role = roles,
                 token = accessToken
