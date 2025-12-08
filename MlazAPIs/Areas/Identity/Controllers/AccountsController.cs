@@ -28,9 +28,9 @@ namespace MlazAPIs.Areas.Identity.Controllers
                 });
             var user = new ApplicationUser
             {
-                FulltName = registerRequest.FullName,
+                FulltName = registerRequest.FullName.TrimEnd().TrimStart(),
                 PhoneNumber = registerRequest.PhoneNumber,
-                UserName = $"{Regex.Replace(registerRequest.FullName , @"\s+" , "")}",
+                UserName = $"{Regex.Replace(registerRequest.FullName, @"\s+", "")}",
                 Email = registerRequest.Email,
             };
             var result = await userManager.CreateAsync(user, registerRequest.Password);
