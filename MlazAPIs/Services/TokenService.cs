@@ -6,14 +6,14 @@ namespace MlazAPIs.Services
     {
         public string GetAccessToken(IEnumerable<Claim> claims)
         {
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("hshjashjhashjashjhjahjhjashjhashdffddffdf"));
-            var cred = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-            var token = new JwtSecurityToken(
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("ghkjjhkjkhjhjkjkjhjkhjhkkjkhjhnnmnmjkdsdsdsds"));
+            var credential = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+            var token = new JwtSecurityToken
+                (
                 issuer: "https://localhost:7131",
                 audience: "https://localhost:7131",
                 claims: claims,
-                expires: DateTime.Now.AddMinutes(20),
-                signingCredentials: cred
+                signingCredentials: credential
                 );
             var jwtToken = new JwtSecurityTokenHandler().WriteToken(token);
             return jwtToken;

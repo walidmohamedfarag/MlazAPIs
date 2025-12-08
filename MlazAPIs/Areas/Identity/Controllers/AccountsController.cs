@@ -73,9 +73,9 @@ namespace MlazAPIs.Areas.Identity.Controllers
                 success = "Login Successfully",
                 name = user.FulltName,
                 id = user.Id,
+                userName = user.UserName,
                 userEmail = user.Email,
                 userPhone = user.PhoneNumber,
-                password = loginRequest.Password,
                 Role = role,
                 token = accessToken,
             });
@@ -110,53 +110,29 @@ namespace MlazAPIs.Areas.Identity.Controllers
         {
             var user = new ApplicationUser
             {
-                FulltName = $"GustUser{Random.Shared.Next(1, 9999)}",
+                FulltName = $"GustUser{Random.Shared.Next(1, 999)}",
             };
             user.UserName = $"{user.FulltName}";
             await userManager.CreateAsync(user);
-            await userManager.AddToRoleAsync(user, StaticRole.User);
+            await userManager.AddToRoleAsync(user, StaticRole.Gust);
+            var roles = string.Join(" ,", await userManager.GetRolesAsync(user));
+            var claims = new[]
+            {
+                new Claim(ClaimTypes.Name , user.UserName),
+                new Claim(ClaimTypes.NameIdentifier , user.Id),
+                new Claim(ClaimTypes.Role , roles),
+                new Claim(JwtRegisteredClaimNames.Jti , Guid.NewGuid().ToString()),
+            };
+            var accessToken = tokenService.GetAccessToken(claims);
             return Ok(new
             {
                 success = "Login Successfully as Gust",
-                name = user.FulltName,
+                name = user.FulltName.Substring(0,4),
                 id = user.Id,
-                role = string.Join(" ," ,(await userManager.GetRolesAsync(user)).ToList()),
+                role = roles,
+                token = accessToken
             });
         }
-        
-        [HttpPost("Refresh")]
-        public async Task<IActionResult> Refresh(TokenApiRequest tokenApiRequest)
-        {
-            if (tokenApiRequest is null || tokenApiRequest.RefreshToken is null || tokenApiRequest.AccessToken is null)
-                return BadRequest(new { error = "invalid client request" });
-            var claims = tokenService.ExtractClimFromToken(tokenApiRequest.AccessToken);
-            var userName = claims.Identity!.Name;
-            var user = userManager.Users.FirstOrDefault(u => u.UserName == userName);
-            if (user is null || user.RefreshToken is null || user.RefreshTokenExpiryTime <= DateTime.UtcNow)
-                return BadRequest(new { error = "invalid client request" });
-            var accessToken = tokenService.GetAccessToken(claims.Claims);
-            var refreshToken = tokenService.GetRefreshToken();
-            user.RefreshToken = refreshToken;
-            await userManager.UpdateAsync(user);
-            return Ok(new
-            {
-                AccessToken = accessToken,
-                RefreshToken = refreshToken
-            });
-        }
-
-        [HttpPost, Authorize]
-        [Route("Revok")]
-        public async Task<IActionResult> Revok()
-        {
-            var userName = User.Identity!.Name;
-            var user = userManager.Users.FirstOrDefault(u => u.UserName == userName);
-            if (user is null) return BadRequest(new { error = "user not found" });
-            user.RefreshToken = null;
-            await userManager.UpdateAsync(user);
-            return NoContent();
-        }
-
 
     }
 }

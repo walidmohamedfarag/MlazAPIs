@@ -17,27 +17,28 @@ namespace MlazAPIs
             })
                 .AddEntityFrameworkStores<DataAccess.ApplicationDBContext>()
                 .AddDefaultTokenProviders();
+            services.AddScoped<ITokenService, TokenService>();
             services.AddAuthentication(option =>
             {
                 option.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 option.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
             })
-               .AddJwtBearer(option =>
-               {
-                   option.TokenValidationParameters = new TokenValidationParameters
-                   {
-                       ValidateIssuer = true,
-                       ValidateAudience = true,
-                       ValidateLifetime = true,
-                       ValidateIssuerSigningKey = true,
-                       ValidIssuer = "https://localhost:7139",
-                       ValidAudience = "https://localhost:7139",
-                       IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("ghkjjhkjkhjhjkjkjhjkhjhkkjkhjhnnmnmjkdsdsdsds"))
-                   };
-               });
-            services.AddTransient<ITokenService, TokenService>();
+                .AddJwtBearer(option =>
+                {
+                    option.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true,
+                        ValidIssuer = "https://localhost:7131",
+                        ValidAudience = "https://localhost:7131",
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("ghkjjhkjkhjhjkjkjhjkhjhkkjkhjhnnmnmjkdsdsdsds"))
+                    };
+                });
             services.AddScoped<IDBInitializer, DBInitializer>();
-
         }
+
+
     }
 }
