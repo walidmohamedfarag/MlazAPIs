@@ -16,6 +16,7 @@ namespace MlazAPIs
                 option.Password.RequireNonAlphanumeric = false;
                 option.Password.RequireDigit = false;
                 option.Password.RequireUppercase = false;
+                option.User.AllowedUserNameCharacters = null;
             })
                 .AddEntityFrameworkStores<DataAccess.ApplicationDBContext>()
                 .AddDefaultTokenProviders();
@@ -39,6 +40,21 @@ namespace MlazAPIs
                     };
                 });
             services.AddScoped<IDBInitializer, DBInitializer>();
+            services.AddCors(option =>
+            {
+                option.AddPolicy("AllowLocalhost", policy =>
+                {
+                    policy
+                    .AllowAnyHeader()
+                    .AllowAnyMethod()
+                    .WithOrigins(
+                        "http://localhost:3000",
+                        "http://localhost:4200",
+                        "http://localhost:5173",
+                        "http://localhost:8080"
+                        );
+                });
+            });
         }
 
 
