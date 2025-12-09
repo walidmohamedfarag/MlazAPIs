@@ -28,9 +28,8 @@ namespace MlazAPIs
             {
                 app.MapOpenApi();
                 app.MapScalarApiReference();
-                app.UseRouting(); 
-                app.UseCors("AllowLocalhost");
             }
+            app.UseCors("AllowLocalhost");
 
             app.UseHttpsRedirection();
 
