@@ -1,7 +1,10 @@
-﻿namespace MlazAPIs.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace MlazAPIs.Models
 {
     public class Report
     {
+        [Key]
         public int Id { get; set; }
         public string Title { get; set; } = null!;
         public string ImageUrl { get; set; } = string.Empty;
