@@ -1,0 +1,14 @@
+﻿namespace MlazAPIs.Models
+{
+    public class Report
+    {
+        public int Id { get; set; }
+        public string Title { get; set; } = null!;
+        public int Latitude { get; set; }
+        public int Longitude { get; set; }
+        public DateTime Date { get; set; } = DateTime.Now;
+        public string UserId { get; set; } = null!;
+        public ApplicationUser User { get; set; } = null!;
+
+    }
+}
