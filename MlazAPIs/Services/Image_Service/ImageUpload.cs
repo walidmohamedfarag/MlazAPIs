@@ -6,7 +6,7 @@ namespace MlazAPIs.Services.Image_Service
 {
     record CloudSetting(string CloudName, string ApiKey , string ApiSecret);
     public record UploadResult(string Url, string PublicId);
-    public class ImageUpload
+    public class ImageUpload : IImageUpload
     {
         public readonly IConfiguration _configuration;
         readonly CloudSetting _cloudSetting;

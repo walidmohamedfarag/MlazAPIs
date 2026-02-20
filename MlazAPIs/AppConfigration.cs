@@ -1,4 +1,5 @@
 ﻿
+using MlazAPIs.Services.Image_Service;
 using MlazAPIs.Services.Token_Service;
 using MlazAPIs.Utility.DBInitializer;
 
@@ -41,6 +42,7 @@ namespace MlazAPIs
                     };
                 });
             services.AddScoped<IDBInitializer, DBInitializer>();
+            services.AddScoped<IImageUpload, ImageUpload>();
             services.AddCors(option =>
             {
                 option.AddPolicy("AllowLocalhost", policy =>
