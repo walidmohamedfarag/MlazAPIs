@@ -1,12 +1,14 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>37237d65-f786-4e1d-a895-3f69abbe8a93</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
+	  <PackageReference Include="CloudinaryDotNet" Version="1.27.9" />
 	  <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.11" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.11" />
 	  <PackageReference Include="Scalar.AspNetCore" Version="2.10.3" />
