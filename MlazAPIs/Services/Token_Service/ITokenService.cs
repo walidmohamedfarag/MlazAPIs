@@ -1,4 +1,4 @@
-﻿namespace MlazAPIs.Services
+﻿namespace MlazAPIs.Services.Token_Service
 {
     public interface ITokenService
     {

@@ -1,6 +1,6 @@
 ﻿using System.Security.Cryptography;
 
-namespace MlazAPIs.Services
+namespace MlazAPIs.Services.Token_Service
 {
     public class TokenService : ITokenService
     {
