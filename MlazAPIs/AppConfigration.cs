@@ -43,6 +43,7 @@ namespace MlazAPIs
                 });
             services.AddScoped<IDBInitializer, DBInitializer>();
             services.AddScoped<IImageUpload, ImageUpload>();
+            services.AddScoped<IReposatory<Report>, Reposatory<Report>>();
             services.AddCors(option =>
             {
                 option.AddPolicy("AllowLocalhost", policy =>

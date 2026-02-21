@@ -1,6 +1,5 @@
 ﻿using MlazAPIs.Services.Token_Service;
 using MlazAPIs.Utility.DBInitializer;
-using System.Text.RegularExpressions;
 
 namespace MlazAPIs.Areas.Identity.Controllers
 {
