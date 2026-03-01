@@ -10,9 +10,7 @@ namespace MlazAPIs.DTOs.Requests
         public string Description { get; set; } = null!;
         public IFormFile? Image { get; set; } 
         [Required]
-        public int Latitude { get; set; }
-        [Required]
-        public int Longitude { get; set; }
+        public string Location { get; set; } = null!;
 
     }
 }

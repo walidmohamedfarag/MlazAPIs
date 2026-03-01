@@ -35,8 +35,7 @@ namespace MlazAPIs.Areas.User.Controllers
                 {
                     Title = reportRequest.Title,
                     Description = reportRequest.Description,
-                    Latitude = reportRequest.Latitude,
-                    Longitude = reportRequest.Longitude,
+                    Location = reportRequest.Location,
                     UserId = user!.Id,
                 };
                 if (reportRequest.Image is not null && reportRequest.Image.Length > 0)
