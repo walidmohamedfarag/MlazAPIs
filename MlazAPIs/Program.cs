@@ -1,5 +1,6 @@
 using MlazAPIs.Utility.DBInitializer;
 using Scalar.AspNetCore;
+using Serilog;
 
 namespace MlazAPIs
 {
@@ -7,8 +8,11 @@ namespace MlazAPIs
     {
         public static void Main(string[] args)
         {
-            var builder = WebApplication.CreateBuilder(args);
+            Log.Logger = new LoggerConfiguration().WriteTo.File(@"logs/log-.txt", rollingInterval: RollingInterval.Day)
+            .CreateLogger();
 
+            var builder = WebApplication.CreateBuilder(args);
+            builder.Host.UseSerilog();
             // Add services to the container.
 
             builder.Services.AddControllers();

@@ -6,6 +6,8 @@ namespace MlazAPIs.DTOs.Requests
     {
         [Required]
         public string Title { get; set; } = null!;
+        [Required]
+        public string Description { get; set; } = null!;
         public IFormFile? Image { get; set; } 
         [Required]
         public int Latitude { get; set; }

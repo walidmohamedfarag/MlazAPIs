@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace MlazAPIs.Services.Image_Service
 {
-    record CloudSetting(string CloudName, string ApiKey , string ApiSecret);
+    public record CloudSetting(string CloudName, string ApiKey , string ApiSecret);
     public record UploadResult(string Url, string PublicId);
     public class ImageUpload : IImageUpload
     {
@@ -19,7 +19,7 @@ namespace MlazAPIs.Services.Image_Service
             var account = new Account(_cloudSetting.CloudName , _cloudSetting.ApiKey, _cloudSetting.ApiSecret);
             _cloudinary = new Cloudinary(account);
         }
-        public async Task<UploadResult> ImageUploadAsync(IFormFile image , string folder = null!)
+        public async Task<UploadResult> ImageUploadAsync(IFormFile image , string? folder = null)
         {
             var imageUpload = new ImageUploadResult();
             if(image is not null && image.Length > 0 )
