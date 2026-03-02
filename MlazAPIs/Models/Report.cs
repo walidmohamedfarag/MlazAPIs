@@ -2,15 +2,6 @@
 
 namespace MlazAPIs.Models
 {
-    public enum ReportStatus
-    {
-        [Display(Name = "في الانتظار")]
-        Pending = 1,
-        [Display(Name = "تم الحل")]
-        Resolved = 2,
-        [Display(Name = "مرفوض")]
-        Rejected = 3
-    }
     public class Report
     {
         [Key]
@@ -20,7 +11,8 @@ namespace MlazAPIs.Models
         public string ImageUrl { get; set; } = string.Empty;
         public string ImagePublicId { get; set; } = string.Empty;
         public string Location { get; set; } = null!;
-        public ReportStatus Status { get; set; } = ReportStatus.Pending;
+        public string Status { get; set; } = "قيد الانتظار";
+        public string Message { get; set; } = string.Empty;
         public DateTime Date { get; set; } = DateTime.Now;
         public string UserId { get; set; } = null!;
         public ApplicationUser User { get; set; } = null!;
