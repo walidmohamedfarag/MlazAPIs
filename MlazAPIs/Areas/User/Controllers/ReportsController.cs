@@ -65,11 +65,11 @@ namespace MlazAPIs.Areas.User.Controllers
             return Ok(reports);
         }
         [HttpPut("StatusUpdate")]
-        [Authorize(Roles = $"{StaticRole.Admin}")]
+        [Authorize(Roles = $"{StaticRole.Admin} , {StaticRole.SuperAdmin}")]
         public async Task<IActionResult> StatusUpdate(UpdateStatus updateStatus)
         {
             var report = await _reportReposatory.GetOneAsync(rep => rep.Id == updateStatus.Id);
-            if(report is null)
+            if (report is null)
                 return BadRequest(new { message = "Report not found" });
             if (updateStatus.Message is null && updateStatus.IsApproved is null)
                 report.Status = "يتم التحقق من البلاغ";
@@ -86,6 +86,21 @@ namespace MlazAPIs.Areas.User.Controllers
             _reportReposatory.Update(report);
             await _reportReposatory.CommitAsync();
             return Ok(new { message = "Report status updated successfully" });
+        }
+        [Authorize(Roles = $"{StaticRole.SuperAdmin}")]
+        [HttpPut("ChangeRole")]
+        public async Task<IActionResult> ChangeRole(ChangeRoleRequest changeRole)
+        {
+            var user = await _userManager.FindByIdAsync(changeRole.UserId);
+            if (user is null)
+                return BadRequest(new { message = "User not found" });
+            var currentRoles = await _userManager.GetRolesAsync(user);
+            var removeResult = await _userManager.RemoveFromRolesAsync(user, currentRoles);
+            if (!removeResult.Succeeded)
+                return StatusCode(500, new { message = "Failed to remove user from current roles" });
+            if (changeRole.Role.ToLower() == StaticRole.Admin.ToLower())
+                await _userManager.AddToRoleAsync(user, changeRole.Role);
+            return Ok(new { message = "Role changed successfully" });
         }
     }
 }
