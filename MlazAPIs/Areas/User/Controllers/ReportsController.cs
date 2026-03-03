@@ -1,4 +1,5 @@
 ﻿using MlazAPIs.Services.Image_Service;
+using MlazAPIs.Utility.DBInitializer;
 using System.Threading.Tasks;
 
 namespace MlazAPIs.Areas.User.Controllers
@@ -62,6 +63,29 @@ namespace MlazAPIs.Areas.User.Controllers
             if (reports is null || !reports.Any())
                 return NotFound(new { message = "No reports found for this user" });
             return Ok(reports);
+        }
+        [HttpPut("StatusUpdate")]
+        [Authorize(Roles = $"{StaticRole.Admin}")]
+        public async Task<IActionResult> StatusUpdate(UpdateStatus updateStatus)
+        {
+            var report = await _reportReposatory.GetOneAsync(rep => rep.Id == updateStatus.Id);
+            if(report is null)
+                return BadRequest(new { message = "Report not found" });
+            if (updateStatus.Message is null && updateStatus.IsApproved is null)
+                report.Status = "يتم التحقق من البلاغ";
+            else if (updateStatus.IsApproved == true && updateStatus.Message is not null)
+            {
+                report.Status = "تم حل البلاغ";
+                report.Message = updateStatus.Message;
+            }
+            else if (updateStatus.IsApproved == false && updateStatus.Message is not null)
+            {
+                report.Status = "تم رفض البلاغ";
+                report.Message = updateStatus.Message;
+            }
+            _reportReposatory.Update(report);
+            await _reportReposatory.CommitAsync();
+            return Ok(new { message = "Report status updated successfully" });
         }
     }
 }
