@@ -1,4 +1,5 @@
-﻿using MlazAPIs.Services.Image_Service;
+﻿using MlazAPIs.DTOs.Response;
+using MlazAPIs.Services.Image_Service;
 using MlazAPIs.Utility.DBInitializer;
 using System.Threading.Tasks;
 
@@ -101,6 +102,27 @@ namespace MlazAPIs.Areas.User.Controllers
             if (changeRole.Role.ToLower() == StaticRole.Admin.ToLower())
                 await _userManager.AddToRoleAsync(user, changeRole.Role);
             return Ok(new { message = "Role changed successfully" });
+        }
+        [Authorize(Roles = $"{StaticRole.SuperAdmin}")]
+        [HttpGet("GetAllUser")]
+        public async Task<IActionResult> GetAllUser()
+        {
+            var users = await _userManager.Users.ToListAsync();
+            var userList = new List<UserResponse>();
+            foreach (var user in users)
+            {
+                var roles = await _userManager.GetRolesAsync(user);
+                if(await _userManager.IsInRoleAsync(user , StaticRole.SuperAdmin))
+                    continue;
+                userList.Add(new UserResponse
+                {
+                    UserId = user.Id,
+                    Name = user.FullName,
+                    UserEmail = user.Email!,
+                    UserRoles = string.Join(", ", roles)
+                });
+            }
+            return Ok(userList);
         }
     }
 }
