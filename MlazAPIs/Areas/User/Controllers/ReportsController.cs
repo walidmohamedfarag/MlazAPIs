@@ -124,5 +124,14 @@ namespace MlazAPIs.Areas.User.Controllers
             }
             return Ok(userList);
         }
+        [Authorize(Roles = $"{StaticRole.Admin} , {StaticRole.SuperAdmin}")]
+        [HttpGet("GetAllReport")]
+        public IActionResult GetAllReport()
+        {
+            var reports = _reportReposatory.GetAllAsync().Result;
+            if (reports is null || !reports.Any())
+                return NotFound(new { message = "No reports found" });
+            return Ok(reports);
+        }
     }
 }
